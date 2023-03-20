@@ -44,19 +44,6 @@ public class Collision extends Addons {
         }
       } else {
         return polyPoly(otherObjects[current],host);
-      //   // get next vertex in list
-      //   // if we've hit the end, wrap around to 0
-      //   if (next == otherObjects.length) next = 0;
-        
-      //   // get point positions
-      //   Vector[] vectorCurrentpoints = otherObjects[current].pos;
-      //   Vector point1 = new Vector(vectorCurrentpoints[current].getX(), vectorCurrentpoints[current].getY());
-      //   Vector point2 = new Vector(vectorCurrentpoints[next].getX(), vectorCurrentpoints[next].getY());
-
-      //   // now we can use these two points (a line) to compare
-      //   // to the other polygon's vertices using polyLine()
-      //   boolean collision = polyLine(host, point1, point2);
-      //   if (collision) return true;
       }
     }
     return false;
