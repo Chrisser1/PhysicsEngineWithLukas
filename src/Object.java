@@ -19,10 +19,11 @@ public abstract class Object {
 
   ArrayList<Addons> addons = new ArrayList<Addons>();
 
-  public Object(Vector[] pos, Addons[] addons) {
+  public Object(Vector[] pos, Addons[] addons, int color) {
     this.pos = pos;
       velocity = new Vector(0f, 0f);
       acceleratuion = new Vector(0f,0f);
+
       for(int i = 0; i < addons.length; i++) {
         this.addons.add(addons[i]);
         this.addons.get(i).setup(this);
