@@ -1,21 +1,26 @@
 import java.util.ArrayList;
 
+import processing.core.PGraphics;
+
 /**
  * Objekt
  */
-public class Object {
-    protected Vector pos;
+public abstract class Object {
+  protected final Vector[] pos;
+
+  protected int radius;
   
   protected Vector velocity;
-
-  public final double mass = 10f;
-
   protected Vector acceleratuion;
+
+  public final int mass = 10;
+  protected int color;
+
 
   ArrayList<Addons> addons = new ArrayList<Addons>();
 
-  public Object(Addons[] addons) {
-      pos = new Vector(10, 10);
+  public Object(Vector[] pos, Addons[] addons) {
+    this.pos = pos;
       velocity = new Vector(0f, 0f);
       acceleratuion = new Vector(0f,0f);
       for(int i = 0; i < addons.length; i++) {
@@ -24,17 +29,28 @@ public class Object {
       }
   }
   
-  public void tick() {
-    for(int i = 0; i < addons.size(); i++) {
-      this.addons.add(addons.get(i));
-    }
-  }
+  public void tick(Object[] objects) {
+    updatePos();
+    updateAddons(objects);
+  };
 
     protected void updatePos() {
         velocity.add(acceleratuion);
-        pos.add(velocity);
-        System.out.println(pos.getCoords());
+        for(int i = 0; i < pos.length; i++) {
+        pos[i].add(velocity);
+        }
+        // System.out.println(pos[0].getCoords());
     }
 
+  protected void updateAddons(Object[] objects) {
+    for(Addons addon: addons) {
+      addon.tick(this,objects);
+    }
+  }
 
+  public int getRadius() {
+      return radius;
+  }
+
+  public abstract void draw(PGraphics g);
 }

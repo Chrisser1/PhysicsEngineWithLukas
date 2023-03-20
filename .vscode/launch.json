@@ -1,0 +1,22 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Current File",
+      "request": "launch",
+      "mainClass": "${file}"
+    },
+    {
+      "type": "java",
+      "name": "Sketch",
+      "request": "launch",
+      "mainClass": "Sketch",
+      "projectName": "PhysicsEngineWithLukas_1024ee98",
+    }
+  ],
+  "vmArgs": "-Djava.awt.headless=true -Dfile.encoding=UTF-8 -XX:+UseG1GC -XX:+UseStringDeduplication -Xmx<1GB>m -Xms<2GB>m",
+}

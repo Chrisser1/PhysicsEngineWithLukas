@@ -4,19 +4,21 @@ import processing.core.PGraphics;
  * Ball
  */
 public class Ball extends Object {
-  private int radius = 10;
-  public double kineticEnergy = 1/2 * mass * Math.pow((velocity.sum()),2); 
+    public float kineticEnergy = 1/2 * mass * (float)Math.pow((velocity.sum()),2);
 
-    public Ball() { 
-        super(new Addons[] {new Gravity()});
+
+    public Ball(Vector pos,int radius,Addons[] addons, int color) {
+        super(new Vector[] {pos}, addons);
+        this.radius = radius;
+        this.color = color;
     }
 
-    public void draw(PGraphics g) {
-        g.ellipse((float)pos.getX(), (float)pos.getY(), (float)radius, (float)radius );
-    }
 
-    public void tick() {
-        updatePos();
+
+    public void draw(PGraphics grafics) {
+        grafics.push();
+        grafics.fill(color);
+        grafics.ellipse((float)pos[0].getX(), (float)pos[0].getY(), (float) radius * 2, (float) radius * 2);
+        grafics.pop();
     }
-    
 }

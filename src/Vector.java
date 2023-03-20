@@ -2,13 +2,13 @@
  * Vector
  */
 public class Vector {
-    private double x;
-    private double y;
+    private float x;
+    private float y;
 
     /**
     * Denne funktion bliver kørt når objektet bliver køret
     */
-    public Vector(double x,double y) {
+    public Vector(float x, float y) {
         this.x = x;
         this.y = y;
     }
@@ -26,16 +26,16 @@ public class Vector {
         this.y += vector.getY();
     }
 
-    public void divide(Double value) {
+    public void divide(float value) {
         this.x = this.x / value;
         this.y = this.y / value;
     }
 
-    public double getX() {
+    public float getX() {
         return x;
     }
 
-    public double getY() {
+    public float getY() {
         return y;
     }
 
@@ -43,7 +43,7 @@ public class Vector {
         return "X: " + x + " | " + "Y: " + y;
     }
 
-    public double sum() {
+    public float sum() {
         return x+y; 
     }
 }

@@ -2,6 +2,6 @@
  * Addons
  */
 public abstract class Addons {
-    public abstract void tick();
-    public abstract void setup(Object object);
+    public abstract void tick(Object host,Object[] objects);
+    public abstract void setup(Object host);
 }
