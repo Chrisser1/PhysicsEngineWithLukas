@@ -15,6 +15,7 @@ public class Square extends Object{
 
     public void draw(PGraphics grafics) {
       grafics.push();
+      grafics.noStroke();
       grafics.fill(color);
       grafics.beginShape();
       for(int i = 0; i < pos.length; i++) {
