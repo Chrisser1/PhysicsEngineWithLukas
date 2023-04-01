@@ -7,7 +7,7 @@ public class Ball extends Object {
     public float kineticEnergy = 1/2 * mass * (float)Math.pow((velocity.sum()),2);
 
 
-    public Ball(Vector pos,int radius,Addons[] addons, int color) {
+    public Ball(Vector pos,int radius, Addons[] addons, int color) {
         super(new Vector[] {pos}, addons, color);
         this.radius = radius;
     }

@@ -4,16 +4,41 @@ public class Collision extends Addons {
 
   public void setup(Object host) {}
 
+  @Deprecated
   public void tick(Object host,Object[] allObjects) {
 
+    // ArrayList<Object> otherObjects = new ArrayList<Object>();
+
+    // for(int i = 0; i < allObjects.length; i++) {
+    //   if(allObjects[i] != host) {
+    //     otherObjects.add(allObjects[i]);
+    //   }
+    // }
+
+    // // Does not work couse Java funny
+    // // Object[] sorted = otherObjects.toArray();
+
+    // Object[] sorted = new Object[otherObjects.size()];
+    // for(int i = 0; i < otherObjects.size(); i++) {
+    //   sorted[i] = otherObjects.get(i);
+    // }
+
+    // if(detectCollision(host,sorted)) {
+    //   System.out.println("There is collision");
+    // } else {
+    //   System.out.println("No collision");
+    // }
+  }
+
+  public void updatePos(Object host) {
     ArrayList<Object> otherObjects = new ArrayList<Object>();
 
-    for(int i = 0; i < allObjects.length; i++) {
-      if(allObjects[i] != host) {
-        otherObjects.add(allObjects[i]);
+    for(int i = 0; i < Sketch.objects.length; i++) {
+      if(Sketch.objects[i] != host) {
+        otherObjects.add(Sketch.objects[i]);
       }
     }
-
+    
     // Does not work couse Java funny
     // Object[] sorted = otherObjects.toArray();
 
@@ -27,10 +52,8 @@ public class Collision extends Addons {
     } else {
       System.out.println("No collision");
     }
-  }
-
+  };
   
-
   
   public static boolean detectCollision(Object host, Object[] otherObjects) {
     for(int current = 0; current < otherObjects.length; current++){
@@ -49,39 +72,39 @@ public class Collision extends Addons {
     return false;
   }
 
-private static boolean polyPoly(Object poly1, Object poly2) {
-    Vector[] poly1Pos = poly1.pos;
-    Vector[] poly2Pos = poly2.pos;
+private static boolean polyPoly(Object other, Object host) {
+    Vector[] otherPos = other.pos;
+    Vector[] hostPos = host.pos;
   // go through each of the vertices, plus the next
   // vertex in the list
   int next = 0;
-  for (int current=0; current<poly1Pos.length; current++) {
+  for (int current=0; current<otherPos.length; current++) {
 
     // get next vertex in list
     // if we've hit the end, wrap around to 0
     next = current+1;
-    if (next == poly1Pos.length) next = 0;
+    if (next == otherPos.length) next = 0;
 
     // get the PVectors at our current position
     // this makes our if statement a little cleaner
-    Vector vc = poly1Pos[current];    // c for "current"
-    Vector vn = poly1Pos[next];       // n for "next"
+    Vector vc = otherPos[current];    // c for "current"
+    Vector vn = otherPos[next];       // n for "next"
 
     // now we can use these two points (a line) to compare
     // to the other polygon's vertices using polyLine()
-    boolean collision = polyLine(poly2, vc, vn);
+    boolean collision = polyLine(host, vc, vn, other);
     if (collision) return true;
 
     // optional: check if the 2nd polygon is INSIDE the first
-    collision = polyPoint(poly1, poly2Pos[0]);
+    collision = polyPoint(other, hostPos[0]);
     if (collision) return true;
   }
 
   return false;
 }
 
-private static boolean polyPoint(Object poly, Vector point) {
-  Vector[] vertices = poly.pos;
+private static boolean polyPoint(Object other, Vector host) {
+  Vector[] vertices = other.pos;
 
   boolean collision = false;
   
@@ -103,9 +126,9 @@ private static boolean polyPoint(Object poly, Vector point) {
     // compare position, flip 'collision' variable
     // back and forth
 
-  boolean del1 = vc.getY() > point.getY() && vn.getY() < point.getY();
-  boolean del2 = vc.getY() < point.getY() && vn.getY() > point.getY();
-  boolean del3 = point.getX() < (vn.getX()-vc.getX())*(point.getY()-vc.getY()) / (vn.getY()-vc.getY())+vc.getX(); 
+  boolean del1 = vc.getY() > host.getY() && vn.getY() < host.getY();
+  boolean del2 = vc.getY() < host.getY() && vn.getY() > host.getY();
+  boolean del3 = host.getX() < (vn.getX()-vc.getX())*(host.getY()-vc.getY()) / (vn.getY()-vc.getY())+vc.getX(); 
 
     if ((del1 || del2) && del3) {
             collision = true;
@@ -115,8 +138,8 @@ private static boolean polyPoint(Object poly, Vector point) {
 }
 
 
-  private static boolean polyLine(Object poly, Vector point1, Vector point2) {
-    Vector[] vertices = poly.pos;
+  private static boolean polyLine(Object host, Vector point1, Vector point2, Object other) {
+    Vector[] vertices = host.pos;
     int next = 0;
     for (int current = 0; current<vertices.length; current++) {
       next = current + 1;
@@ -127,12 +150,64 @@ private static boolean polyPoint(Object poly, Vector point) {
       // stop testing (faster)
       boolean hit = lineLine(point1, point2, vertices[current], vertices[next]);
       if (hit) {
-        return true;
+        // changeDirectionPolyPoly(point1, point2, vertices[current], vertices[next], host, other);
       }
     }
     // never got a hit
     return false;
   }
+
+
+
+
+  private static void changeDirectionPolyPoly(Vector point1, Vector point2, Vector hostPoint1, Vector hostPoint2, Object host, Object other){
+    
+    
+    float dy = point2.getY() - point1.getY();
+    float dx = point2.getX() - point1.getX();
+    Vector normal = new Vector(-dy, dx);
+    float length = (float) Math.sqrt(Math.pow(host.velocity.getX()*2,2)+Math.pow(host.velocity.getY()*2,2));
+    float normalLength = (float) Math.sqrt(Math.pow(normal.getX(),2)+Math.pow(normal.getY(),2));
+    float changeInLenght = length/normalLength;
+    Vector changeInVelocity = new Vector(normal.getX()*changeInLenght,normal.getY()*changeInLenght);
+    
+    float hældning1 = (point1.getY()-point2.getY())/(point1.getX()-point2.getX());
+    float b1 = point1.getY()-(hældning1*point1.getX());
+    
+    float hældning2 = (hostPoint1.getY()-point2.getY())/(hostPoint1.getX()-point2.getX());
+    float b2 = hostPoint1.getY()-(hældning2*hostPoint1.getX());
+    
+    float xSkæring = -((b1-b2)/(hældning1-hældning2));
+    float ySkæring = hældning1*xSkæring+b1;
+
+    
+
+    // host.addPos(changeInVelocity);
+
+    // if (host.velocity.getX() != 0 || host.velocity.getY() != 0) {
+    //   float xAdd = 0;
+    //   float yAdd = 0;
+    //   float number = 4f;
+    //   if (host.velocity.getX() != 0) {
+    //     if (host.velocity.getX() > 0) {
+    //       xAdd = -number;
+    //     }
+    //     else{
+    //       xAdd = number;
+    //     }
+    //   }
+    //   if (host.velocity.getY() != 0) {
+    //     if (host.velocity.getY() > 0) {
+    //       yAdd = -number;
+    //     }
+    //     else{
+    //       yAdd = number;
+    //     }
+    //   }
+    //   host.addPos(xAdd, yAdd);
+    //   }
+    host.velocity.add(changeInVelocity);
+}
 
   private static boolean lineLine(Vector point1, Vector point2, Vector point3, Vector point4) {
     // calculate the direction of the lines
@@ -188,7 +263,11 @@ private static boolean polyPoint(Object poly, Vector point) {
     float distance = (float) Math.sqrt( (distX*distX) + (distY*distY) );
 
     if (distance <= circle.radius) {
-      return true;
+      // we evalf the normal vector of the line
+      float dy = pos2.getY() - pos1.getY();
+      float dx = pos2.getX() - pos1.getX();
+      Vector normal = new Vector(-dy, dx);
+      circle.acceleratuion = new Vector(normal);
     }
     return false;
 

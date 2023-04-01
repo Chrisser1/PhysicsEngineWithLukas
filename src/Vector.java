@@ -46,4 +46,13 @@ public class Vector {
     public float sum() {
         return x+y; 
     }
+
+    public void set(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+    // Get the lenght of a 2D vector
+    public float length() {
+        return (float) Math.sqrt(Math.pow(x,2)+Math.pow(y,2));
+    }
 }
