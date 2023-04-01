@@ -5,12 +5,12 @@ import processing.core.PGraphics;
  */
 public class Square extends Object{
   
-  public Square(Vector pos1, Vector pos2,Vector pos3,Vector pos4, Addons[] addons, int color) {
-    super(new Vector[] {pos1,pos2,pos3,pos4},addons, color);
+  public Square(Vector pos1, Vector pos2,Vector pos3,Vector pos4, Addons[] addons, int color, boolean Static) {
+    super(new Vector[] {pos1,pos2,pos3,pos4},addons, color, Static);
   }
 
-  public Square(Vector pos, int width, int height, Addons[] addons, int color) {
-    super(new Vector[] {new Vector(pos.getX(),pos.getY()),new Vector(pos.getX() + width, pos.getY()),new Vector(pos.getX() + width, pos.getY() + height),new Vector(pos.getX(), pos.getY()+ height)},addons,color);
+  public Square(Vector pos, int width, int height, Addons[] addons, int color, boolean Static) {
+    super(new Vector[] {new Vector(pos.getX(),pos.getY()),new Vector(pos.getX() + width, pos.getY()),new Vector(pos.getX() + width, pos.getY() + height),new Vector(pos.getX(), pos.getY()+ height)},addons,color, Static);
   }
 
     public void draw(PGraphics grafics) {

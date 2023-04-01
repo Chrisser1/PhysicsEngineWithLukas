@@ -31,6 +31,10 @@ public class Vector {
         this.y = this.y / value;
     }
 
+  public float dotProduct(Vector vector) {
+    return this.getX() * vector.getX() + this.getY() * vector.getY();
+  }
+
     public float getX() {
         return x;
     }

@@ -7,7 +7,7 @@ import processing.core.PGraphics;
  */
 public abstract class Object {
   protected final Vector[] pos;
-
+  protected boolean Static;
   protected int radius;
   
   protected Vector velocity;
@@ -17,15 +17,16 @@ public abstract class Object {
   public final int mass = 10;
   protected int color;
   public boolean isStatic = true;
+  public boolean move = true;
 
   ArrayList<Addons> addons = new ArrayList<Addons>();
 
-  public Object(Vector[] pos, Addons[] addons, int color) {
+  public Object(Vector[] pos, Addons[] addons, int color, boolean Static) {
     this.pos = pos;
       velocity = new Vector(0f, 0f);
       acceleratuion = new Vector(0f,0f);
       force = new Vector(0f,0f);
-
+    this.Static = Static;
       for(int i = 0; i < addons.length; i++) {
         if(addons[i] instanceof Collision) isStatic = false;
         this.addons.add(addons[i]);
@@ -34,6 +35,7 @@ public abstract class Object {
   }
   
   public void tick(Object[] objects) {
+    if(Static) return;
     updatePos();
     updateAddons(objects);
   };
@@ -44,6 +46,10 @@ public abstract class Object {
     float Xratio =  velocity.getX() / velocity.length();
     float Yratio =  velocity.getY() / velocity.length();
     for(int i = 0; i < velocity.length(); i++) {
+      if(!move) {
+        addPos(new Vector(Xratio,Yratio));
+        break;
+      }
       addPos(new Vector(Xratio,Yratio));
       for(Addons addon: addons) {
         addon.updatePos(this);

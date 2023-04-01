@@ -3,9 +3,9 @@
  */
 public class Gravity extends Addons{
   
-  private final float Gravity = 9.82f; // TODO should be 9.82
+  private final float Gravity = 9.82f;
   private float gravityForceX = 0;
-  private float gravityForcey = 0.1f*Gravity;
+  private float gravityForcey = 0.01f*Gravity;
   private Vector gravityForce; 
 
   public void updatePos(Object host) {};

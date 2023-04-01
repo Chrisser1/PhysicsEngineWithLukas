@@ -2,8 +2,8 @@ import processing.core.PGraphics;
 
 public class Polygon extends Object {
 
-    public Polygon(Vector[] pos, Addons[] addons, int color) {
-        super(pos, addons, color);
+    public Polygon(Vector[] pos, Addons[] addons, int color, boolean Static) {
+        super(pos, addons, color,Static);
     }
 
     

@@ -3,6 +3,7 @@ import java.util.ArrayList;
 public class Collision extends Addons {
 
   public void setup(Object host) {}
+  private static returnValuesForPolyCollision  data = null;
 
   @Deprecated
   public void tick(Object host,Object[] allObjects) {
@@ -48,6 +49,8 @@ public class Collision extends Addons {
     }
 
     if(detectCollision(host,sorted)) {
+      if(data != null) changeDirectionPolyPoly(data.vec1,data.vec2, data.object1);
+      host.move = true;
       System.out.println("There is collision");
     } else {
       System.out.println("No collision");
@@ -66,7 +69,10 @@ public class Collision extends Addons {
           return circleCircle(otherObjects[current],host);
         }
       } else {
-        return polyPoly(otherObjects[current],host);
+        var e =  polyPoly(otherObjects[current],host);
+        if(e) {
+          return true;
+        }
       }
     }
     return false;
@@ -150,63 +156,37 @@ private static boolean polyPoint(Object other, Vector host) {
       // stop testing (faster)
       boolean hit = lineLine(point1, point2, vertices[current], vertices[next]);
       if (hit) {
-        // changeDirectionPolyPoly(point1, point2, vertices[current], vertices[next], host, other);
+        data = new returnValuesForPolyCollision(point1, point2, host);
+        host.move = false;
+        return true;
       }
     }
     // never got a hit
+    host.move = true;
     return false;
   }
 
 
-
-
-  private static void changeDirectionPolyPoly(Vector point1, Vector point2, Vector hostPoint1, Vector hostPoint2, Object host, Object other){
+  private static void changeDirectionPolyPoly(Vector point1, Vector point2, Object host){
     
-    
+    // Evalf the normal vector of the line that the object hits
     float dy = point2.getY() - point1.getY();
     float dx = point2.getX() - point1.getX();
     Vector normal = new Vector(-dy, dx);
-    float length = (float) Math.sqrt(Math.pow(host.velocity.getX()*2,2)+Math.pow(host.velocity.getY()*2,2));
-    float normalLength = (float) Math.sqrt(Math.pow(normal.getX(),2)+Math.pow(normal.getY(),2));
-    float changeInLenght = length/normalLength;
-    Vector changeInVelocity = new Vector(normal.getX()*changeInLenght,normal.getY()*changeInLenght);
     
-    float hældning1 = (point1.getY()-point2.getY())/(point1.getX()-point2.getX());
-    float b1 = point1.getY()-(hældning1*point1.getX());
+    // Evalf the angle between velocity and normal vector
+    float angleWithNormal =  (float) Math.toDegrees(Math.acos(host.velocity.dotProduct(normal)/(host.velocity.length()*normal.length())));
     
-    float hældning2 = (hostPoint1.getY()-point2.getY())/(hostPoint1.getX()-point2.getX());
-    float b2 = hostPoint1.getY()-(hældning2*hostPoint1.getX());
-    
-    float xSkæring = -((b1-b2)/(hældning1-hældning2));
-    float ySkæring = hældning1*xSkæring+b1;
-
-    
-
-    // host.addPos(changeInVelocity);
-
-    // if (host.velocity.getX() != 0 || host.velocity.getY() != 0) {
-    //   float xAdd = 0;
-    //   float yAdd = 0;
-    //   float number = 4f;
-    //   if (host.velocity.getX() != 0) {
-    //     if (host.velocity.getX() > 0) {
-    //       xAdd = -number;
-    //     }
-    //     else{
-    //       xAdd = number;
-    //     }
-    //   }
-    //   if (host.velocity.getY() != 0) {
-    //     if (host.velocity.getY() > 0) {
-    //       yAdd = -number;
-    //     }
-    //     else{
-    //       yAdd = number;
-    //     }
-    //   }
-    //   host.addPos(xAdd, yAdd);
-    //   }
-    host.velocity.add(changeInVelocity);
+    // Evalf the rotation angle
+    float angle = (360-(angleWithNormal*4))/2;
+    float radian = (float) Math.toRadians(angle);
+    float cosTheta = (float) Math.cos(radian);
+    float sinTheta = (float)  Math.sin(radian);
+    float xPrime = host.velocity.getX() * cosTheta - host.velocity.getY() * sinTheta;
+    float yPrime = host.velocity.getX() * sinTheta + host.velocity.getY() * cosTheta;
+    // Change velocity
+    host.velocity = new Vector(xPrime,yPrime);
+    host.move = false;
 }
 
   private static boolean lineLine(Vector point1, Vector point2, Vector point3, Vector point4) {
@@ -355,4 +335,17 @@ private static boolean circleCircle(Object circle1, Object circle2) {
     double y = Math.pow((pos2.getY() - pos1.getY()),2);
     return (float) Math.sqrt(x+y);
   }
+
+
+  public static class returnValuesForPolyCollision {
+    public Vector vec1;
+    private Vector vec2;
+    private Object object1;
+    returnValuesForPolyCollision(Vector vec1, Vector vec2, Object object1) {
+      this.vec1 = vec1;
+      this.vec2 = vec2;
+      this.object1 = object1;
+    }
+  }
+
 }
