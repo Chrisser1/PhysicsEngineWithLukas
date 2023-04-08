@@ -31,9 +31,13 @@ public class Vector {
         this.y = this.y / value;
     }
 
-  public float dotProduct(Vector vector) {
+    public float dotProduct(Vector vector) {
     return this.getX() * vector.getX() + this.getY() * vector.getY();
-  }
+    }
+
+    public Vector multiply(float number) {
+        return new Vector(this.getX()*number,this.getY()*number);
+    }
 
     public float getX() {
         return x;
