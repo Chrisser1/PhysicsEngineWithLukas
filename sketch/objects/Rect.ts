@@ -28,6 +28,7 @@ class Rect extends Objects {
     rect(this.position.x, this.position.y, this.width, this.height);
   }
 
+  // Checks if the mouse is inside the rectangle
   collisionWithMouse() {
     return pointRect(
       mouseX,

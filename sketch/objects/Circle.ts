@@ -25,6 +25,7 @@ class Circle extends Objects {
     circle(this.position.x, this.position.y, this.diameter);
   }
 
+  // Checks if the mouse is inside the circle
   collisionWithMouse() {
     return pointCircle(
       mouseX,

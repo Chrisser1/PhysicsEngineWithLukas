@@ -14,6 +14,7 @@ abstract class Objects {
     this.isStatic = isStatic;
   }
 
+  // Updates the position
   updatePos() {
     this.position.add(this.speed);
   }
@@ -23,5 +24,6 @@ abstract class Objects {
    */
   public abstract draw(): void;
 
+  // Checks if the mouse is inside the object
   public abstract collisionWithMouse(): boolean;
 }

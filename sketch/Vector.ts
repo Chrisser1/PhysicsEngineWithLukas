@@ -6,6 +6,7 @@ class Vector {
     this.y = y;
   }
 
+  // Adds a vector to this vector
   add(vec: Vector) {
     this.x += vec.x;
     this.y += vec.y;

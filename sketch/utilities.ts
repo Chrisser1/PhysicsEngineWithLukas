@@ -1,8 +1,19 @@
+// Lists the types of objects that can be drawn
 enum objectTypes {
   Rect,
   Circle,
 }
 
+/**
+ * Returns is a point is inside a Rectangle
+ * @param px points x
+ * @param py points y
+ * @param rx rectangles x
+ * @param ry rectangles y
+ * @param rw rectangles width
+ * @param rh rectangles height
+ * @returns boolean
+ */
 function pointRect(
   px: number,
   py: number,
@@ -10,7 +21,7 @@ function pointRect(
   ry: number,
   rw: number,
   rh: number
-) {
+): boolean {
   // is the point inside the rectangle's bounds?
   if (
     px >= rx && // right of the left edge AND
@@ -23,6 +34,15 @@ function pointRect(
   }
   return false;
 }
+/**
+ * Returns is a point is inside a Circle
+ * @param px points x
+ * @param py points y
+ * @param cx circles x
+ * @param cy circles y
+ * @param radius circles radius
+ * @returns boolean
+*/
 
 function pointCircle(
   px: number,

@@ -9,19 +9,25 @@ let type: objectTypes;
 let static: boolean;
 let bulldozerMode: boolean;
 
+// This function is called once when the program starts
 function setup() {
   objects = new ObjectsManager();
 
+  // Create the canvas
+  let cnv = createCanvas(900, 500);
+  cnv.position((windowWidth - width) / 2);
+
+  // get the width, height and diameter from the HTML Slider
   sliderWidth = document.getElementById("sliderWidth") as HTMLInputElement;
   sliderHeight = document.getElementById("sliderHeight") as HTMLInputElement;
   sliderDiameter = document.getElementById(
     "sliderDiameter"
   ) as HTMLInputElement;
 
-  let cnv = createCanvas(900, 500);
-  cnv.position((windowWidth - width) / 2);
+
 }
 
+// This function is called every frame
 function draw() {
   background(225);
   objects.tick();

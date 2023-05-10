@@ -78,7 +78,7 @@ class ObjectsManager {
   }
 
   /**
-   * deleteObject
+   * deletes a object
    */
   public deleteObject(
     xPosition: number,
@@ -92,6 +92,9 @@ class ObjectsManager {
     }
   }
 
+  /**
+   * Adds gravity to the objects
+   */
   addGravity() {
     this.objects.forEach((object) => {
       if (object.isStatic === false) {
@@ -100,12 +103,18 @@ class ObjectsManager {
     });
   }
 
+  /**
+   * Updates the objects position
+  */
   updateObjectsPos() {
     this.objects.forEach((object) => {
       object.updatePos();
     });
   }
 
+  /**
+  * Updates the objects
+  */
   tick() {
     this.addGravity();
     this.updateObjectsPos();
