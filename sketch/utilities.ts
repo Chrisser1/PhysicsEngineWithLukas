@@ -29,8 +29,8 @@ function moveIntersectingCircles(circle1: Circle, circle2: Circle) {
   let midPointY = (circle1.position.y + circle2.position.y) / 2
 
   // https://ericleong.me/research/circle-circle/
-  circle1.position.x = midPointX + circle1.radius * (circle1.position.x - circle2.position.x) / dist; 
-  circle1.position.y = midPointY + circle1.radius * (circle1.position.y - circle2.position.y) / dist; 
-  circle2.position.x = midPointX + circle2.radius * (circle2.position.x - circle1.position.x) / dist; 
-  circle2.position.y = midPointY + circle2.radius * (circle2.position.y - circle1.position.y) / dist;
+  // circle1.position.x = midPointX + circle1.radius * (circle1.position.x - circle2.position.x) / dist; 
+  // circle1.position.y = midPointY + circle1.radius * (circle1.position.y - circle2.position.y) / dist; 
+  // circle2.position.x = midPointX + circle2.radius * (circle2.position.x - circle1.position.x) / dist; 
+  // circle2.position.y = midPointY + circle2.radius * (circle2.position.y - circle1.position.y) / dist;
 }

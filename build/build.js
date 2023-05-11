@@ -280,10 +280,6 @@ function closestPointOnLine(line, point) {
 function moveIntersectingCircles(circle1, circle2) {
     var midPointX = (circle1.position.x + circle2.position.x) / 2;
     var midPointY = (circle1.position.y + circle2.position.y) / 2;
-    circle1.position.x = midPointX + circle1.radius * (circle1.position.x - circle2.position.x) / dist;
-    circle1.position.y = midPointY + circle1.radius * (circle1.position.y - circle2.position.y) / dist;
-    circle2.position.x = midPointX + circle2.radius * (circle2.position.x - circle1.position.x) / dist;
-    circle2.position.y = midPointY + circle2.radius * (circle2.position.y - circle1.position.y) / dist;
 }
 var Objects = (function () {
     function Objects(x, y, type, isStatic) {
