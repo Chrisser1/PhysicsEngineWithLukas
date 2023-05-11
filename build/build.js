@@ -1,14 +1,3 @@
-var Vector = (function () {
-    function Vector(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-    Vector.prototype.add = function (vec) {
-        this.x += vec.x;
-        this.y += vec.y;
-    };
-    return Vector;
-}());
 var ObjectsManager = (function () {
     function ObjectsManager() {
         this.objects = [];
@@ -64,6 +53,33 @@ var ObjectsManager = (function () {
             object.updatePos();
         });
     };
+    ObjectsManager.prototype.chooseCollisionCheck = function (object1, object2) {
+        var colliding;
+        switch ((object1.type, object2.type)) {
+            case objectTypes.Rect && objectTypes.Rect:
+                colliding = rectangleRectangle(object1, object2);
+                break;
+            case objectTypes.Rect && objectTypes.Circle:
+                colliding = circleRectangle(object1, object2);
+                break;
+            case objectTypes.Circle && objectTypes.Rect:
+                colliding = circleRectangle(object1, object2);
+                break;
+            case objectTypes.Circle && objectTypes.Circle:
+                colliding = circleCircle(object1, object2);
+                break;
+            default:
+                console.error("Error there is no type");
+        }
+    };
+    ObjectsManager.prototype.checkCollisionBetweenObjects = function () {
+        var _this = this;
+        this.objects.forEach(function (object, i) {
+            var tempObjectArray = _this.objects.concat();
+            tempObjectArray.splice(i, 1);
+            tempObjectArray.forEach(function (secondObject) { });
+        });
+    };
     ObjectsManager.prototype.tick = function () {
         this.addGravity();
         this.updateObjectsPos();
@@ -71,6 +87,125 @@ var ObjectsManager = (function () {
     };
     return ObjectsManager;
 }());
+var Vector = (function () {
+    function Vector(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+    Vector.prototype.add = function (vec) {
+        this.x += vec.x;
+        this.y += vec.y;
+    };
+    return Vector;
+}());
+function pointRect(point, rect) {
+    if (point.x >= rect.position.x &&
+        point.x <= rect.position.x + rect.width &&
+        point.y >= rect.position.y &&
+        point.y <= rect.position.y + rect.height) {
+        return true;
+    }
+    return false;
+}
+function pointCircle(point, circle) {
+    var distX = point.x - circle.position.x;
+    var distY = point.y - circle.position.y;
+    var distance = sqrt(distX * distX + distY * distY);
+    if (distance <= circle.radius) {
+        return true;
+    }
+    return false;
+}
+function circleRectangle(circle, rect) {
+    var testX;
+    var testY;
+    if (circle.position.x < rect.position.x) {
+        testX = rect.position.x;
+    }
+    else if (circle.position.x > rect.position.x + rect.width) {
+        testX = rect.position.x + rect.width;
+    }
+    if (circle.position.y < rect.position.y) {
+        testY = rect.position.y;
+    }
+    else if (circle.position.y > rect.position.y) {
+        testY = +rect.height;
+    }
+    var distX = circle.position.x - testX;
+    var distY = circle.position.y - testY;
+    var distance = sqrt(distX * distX + distY * distY);
+    if (distance <= circle.radius) {
+        return true;
+    }
+    return false;
+}
+function linePoint(line, point) {
+    var d1 = dist(point.x, point.y, line.position.x, line.position.y);
+    var d2 = dist(point.x, point.y, line.position2.x, line.position2.y);
+    var lineLen = dist(line.position.x, line.position.y, line.position2.x, line.position2.y);
+    var buffer = 0.1;
+    if (d1 + d2 >= lineLen - buffer && d1 + d2 <= lineLen + buffer) {
+        return true;
+    }
+    return false;
+}
+function lineCircle(line, circle) {
+    var inside1 = pointCircle(line.position, circle);
+    var inside2 = pointCircle(line.position2, circle);
+    if (inside1 || inside2) {
+        return true;
+    }
+    var distX = line.position.x - line.position2.x;
+    var distY = line.position.y - line.position2.y;
+    var len = sqrt(distX * distX + distY * distY);
+    var dot = ((circle.position.x - line.position.x) * (line.position2.x - line.position.x) + (circle.position.y - line.position.y) * (line.position2.y - line.position.y)) / pow(len, 2);
+    var closestX = line.position.x + dot * (line.position2.x - line.position.x);
+    var closestY = line.position.y + dot * (line.position2.y - line.position.y);
+    var onSegment = linePoint(line, circle.position);
+    if (onSegment === false)
+        return false;
+    distX = closestX - circle.position.x;
+    distY = closestY - circle.position.y;
+    var distance = Math.sqrt(distX * distX + distY * distY);
+    if (distance <= circle.radius) {
+        return true;
+    }
+    return false;
+}
+function LineLine(line1, line2) {
+    var x1 = line1.position.x;
+    var x2 = line1.position2.x;
+    var x3 = line2.position.x;
+    var x4 = line2.position2.x;
+    var y1 = line1.position.y;
+    var y2 = line1.position2.y;
+    var y3 = line2.position.y;
+    var y4 = line2.position2.y;
+    var uA = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
+    var uB = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
+    if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
+        return true;
+    }
+    return false;
+}
+function circleCircle(circle1, circle2) {
+    var distX = circle1.position.x - circle2.position.x;
+    var distY = circle1.position.y - circle2.position.y;
+    var distance = sqrt(distX * distX + distY * distY);
+    if (distance <= circle1.radius + circle2.radius) {
+        return true;
+    }
+    return false;
+}
+function rectangleRectangle(rect1, rect2) {
+    if (rect1.position.x + rect2.width >= rect2.position.x &&
+        rect1.position.x <= rect2.position.x + rect2.width &&
+        rect1.position.y + rect1.height >= rect2.position.y &&
+        rect1.position.y <= rect2.position.y + rect2.height) {
+        return true;
+    }
+    return false;
+}
 var objects;
 var objectWidth;
 var objectHeight;
@@ -83,11 +218,11 @@ var static;
 var bulldozerMode;
 function setup() {
     objects = new ObjectsManager();
+    var cnv = createCanvas(900, 500);
+    cnv.position((windowWidth - width) / 2);
     sliderWidth = document.getElementById("sliderWidth");
     sliderHeight = document.getElementById("sliderHeight");
     sliderDiameter = document.getElementById("sliderDiameter");
-    var cnv = createCanvas(900, 500);
-    cnv.position((windowWidth - width) / 2);
 }
 function draw() {
     background(225);
@@ -122,24 +257,33 @@ var objectTypes;
 (function (objectTypes) {
     objectTypes[objectTypes["Rect"] = 0] = "Rect";
     objectTypes[objectTypes["Circle"] = 1] = "Circle";
+    objectTypes[objectTypes["Line"] = 2] = "Line";
 })(objectTypes || (objectTypes = {}));
-function pointRect(px, py, rx, ry, rw, rh) {
-    if (px >= rx &&
-        px <= rx + rw &&
-        py >= ry &&
-        py <= ry + rh) {
-        return true;
+function closestPointOnLine(line, point) {
+    var A1 = line.position2.y - line.position.y;
+    var B1 = line.position.x - line.position2.x;
+    var C1 = A1 * line.position.x + B1 * line.position.y;
+    var C2 = -B1 * point.x + A1 * point.y;
+    var determinant = A1 * A1 - -B1 * B1;
+    var cx = 0;
+    var cy = 0;
+    if (determinant != 0) {
+        cx = (A1 * C1 - B1 * C2) / determinant;
+        cy = (A1 * C2 - -B1 * C1) / determinant;
     }
-    return false;
+    else {
+        cx = point.x;
+        cy = point.y;
+    }
+    return new Vector(cx, cy);
 }
-function pointCircle(px, py, cx, cy, radius) {
-    var distX = px - cx;
-    var distY = py - cy;
-    var distance = sqrt(distX * distX + distY * distY);
-    if (distance <= radius) {
-        return true;
-    }
-    return false;
+function moveIntersectingCircles(circle1, circle2) {
+    var midPointX = (circle1.position.x + circle2.position.x) / 2;
+    var midPointY = (circle1.position.y + circle2.position.y) / 2;
+    circle1.position.x = midPointX + circle1.radius * (circle1.position.x - circle2.position.x) / dist;
+    circle1.position.y = midPointY + circle1.radius * (circle1.position.y - circle2.position.y) / dist;
+    circle2.position.x = midPointX + circle2.radius * (circle2.position.x - circle1.position.x) / dist;
+    circle2.position.y = midPointY + circle2.radius * (circle2.position.y - circle1.position.y) / dist;
 }
 var Objects = (function () {
     function Objects(x, y, type, isStatic) {
@@ -180,9 +324,27 @@ var Circle = (function (_super) {
         circle(this.position.x, this.position.y, this.diameter);
     };
     Circle.prototype.collisionWithMouse = function () {
-        return pointCircle(mouseX, mouseY, this.position.x, this.position.y, this.radius);
+        return pointCircle(new Vector(mouseX, mouseY), this);
+    };
+    Circle.prototype.collisionWithObject = function () {
+        throw new Error("Method not implemented.");
     };
     return Circle;
+}(Objects));
+var Line = (function (_super) {
+    __extends(Line, _super);
+    function Line(x1, y1, y2, x2, isStatic, position2) {
+        var _this = _super.call(this, x1, y1, objectTypes.Line, isStatic) || this;
+        _this.position2 = new Vector(x2, y2);
+        return _this;
+    }
+    Line.prototype.draw = function () {
+        line(this.position.x, this.position.y, this.position2.x, this.position2.y);
+    };
+    Line.prototype.collisionWithMouse = function () {
+        throw new Error("Method not implemented.");
+    };
+    return Line;
 }(Objects));
 var Rect = (function (_super) {
     __extends(Rect, _super);
@@ -196,7 +358,7 @@ var Rect = (function (_super) {
         rect(this.position.x, this.position.y, this.width, this.height);
     };
     Rect.prototype.collisionWithMouse = function () {
-        return pointRect(mouseX, mouseY, this.position.x, this.position.y, this.width, this.height);
+        return pointRect(new Vector(mouseX, mouseY), this);
     };
     return Rect;
 }(Objects));

@@ -14,12 +14,7 @@ class ObjectsManager {
    * @param diameter The diameter of the object
    * @param type The type of the object
    */
-  public preview(
-    width: number,
-    height: number,
-    diameter: number,
-    type: objectTypes
-  ) {
+  public preview(width: number, height: number, diameter: number, type: objectTypes) {
     switch (type) {
       case objectTypes.Rect:
         rect(mouseX, mouseY, width, height);
@@ -41,22 +36,14 @@ class ObjectsManager {
    * @param diameter   The diameter of the object
    * @param type       The type of the object
    */
-  public createObject(
-    rectWidth: number,
-    rectHeight: number,
-    diameter: number,
-    type: objectTypes,
-    isStatic: boolean
-  ) {
+  public createObject(rectWidth: number, rectHeight: number, diameter: number, type: objectTypes, isStatic: boolean) {
     if (mouseX > width || mouseY > height || mouseX < 0 || mouseY < 0) {
       return;
     }
 
     switch (type) {
       case objectTypes.Rect:
-        this.objects.push(
-          new Rect(mouseX, mouseY, rectWidth, rectHeight, type, isStatic)
-        );
+        this.objects.push(new Rect(mouseX, mouseY, rectWidth, rectHeight, type, isStatic));
         break;
 
       case objectTypes.Circle:
@@ -80,11 +67,7 @@ class ObjectsManager {
   /**
    * deletes a object
    */
-  public deleteObject(
-    xPosition: number,
-    yPosition: number,
-    objects: objectTypes
-  ) {
+  public deleteObject(xPosition: number, yPosition: number, objects: objectTypes) {
     for (let i = 0; i < this.objects.length; i++) {
       if (this.objects[i].collisionWithMouse()) {
         this.objects.splice(i, 1);
@@ -105,16 +88,45 @@ class ObjectsManager {
 
   /**
    * Updates the objects position
-  */
+   */
   updateObjectsPos() {
     this.objects.forEach((object) => {
       object.updatePos();
     });
   }
 
+  chooseCollisionCheck(object1: Objects, object2: Objects) {
+    let colliding;
+    switch (object1.type, object2.type) {
+      case objectTypes.Rect && objectTypes.Rect:
+        colliding = rectangleRectangle(object1 as Rect, object2 as Rect);
+        break;
+        case objectTypes.Rect && objectTypes.Circle:
+          colliding = circleRectangle(object1 as Circle , object2 as Rect);
+          break;
+          case objectTypes.Circle && objectTypes.Rect:
+            colliding = circleRectangle(object1 as Circle, object2 as Rect);
+            break;
+            case objectTypes.Circle && objectTypes.Circle:
+              colliding = circleCircle(object1 as Circle, object2 as Circle);
+              break;
+              default:
+                console.error("Error there is no type");
+          
+    }
+  }
+
+  checkCollisionBetweenObjects() {
+    this.objects.forEach((object, i) => {
+      let tempObjectArray = this.objects.concat();
+      tempObjectArray.splice(i, 1);
+      tempObjectArray.forEach((secondObject) => {});
+    });
+  }
+
   /**
-  * Updates the objects
-  */
+   * Updates the objects
+   */
   tick() {
     this.addGravity();
     this.updateObjectsPos();

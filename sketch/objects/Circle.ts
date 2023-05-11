@@ -8,13 +8,7 @@ class Circle extends Objects {
    * @param mouseY The center y-position
    * @param diameter The diameter of the circle
    */
-  constructor(
-    mouseX: number,
-    mouseY: number,
-    diameter: number,
-    type: objectTypes,
-    isStatic: boolean
-  ) {
+  constructor(mouseX: number, mouseY: number, diameter: number, type: objectTypes, isStatic: boolean) {
     super(mouseX, mouseY, type, isStatic);
     this.diameter = diameter;
     this.radius = diameter / 2;
@@ -27,12 +21,10 @@ class Circle extends Objects {
 
   // Checks if the mouse is inside the circle
   collisionWithMouse() {
-    return pointCircle(
-      mouseX,
-      mouseY,
-      this.position.x,
-      this.position.y,
-      this.radius
-    );
+    return pointCircle(new Vector(mouseX, mouseY), this);
+  }
+
+  public collisionWithObject(): boolean {
+    throw new Error("Method not implemented.");
   }
 }

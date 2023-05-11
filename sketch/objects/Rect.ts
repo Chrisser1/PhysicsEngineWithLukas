@@ -10,14 +10,7 @@ class Rect extends Objects {
    * @param width  The width of the rectangle
    * @param height The hight of the rectangle
    */
-  constructor(
-    mouseX: number,
-    mouseY: number,
-    width: number,
-    height: number,
-    type: objectTypes,
-    isStatic: boolean
-  ) {
+  constructor(mouseX: number, mouseY: number, width: number, height: number, type: objectTypes, isStatic: boolean) {
     super(mouseX, mouseY, type, isStatic);
     this.width = width;
     this.height = height;
@@ -30,13 +23,6 @@ class Rect extends Objects {
 
   // Checks if the mouse is inside the rectangle
   collisionWithMouse() {
-    return pointRect(
-      mouseX,
-      mouseY,
-      this.position.x,
-      this.position.y,
-      this.width,
-      this.height
-    );
+    return pointRect(new Vector(mouseX, mouseY), this);
   }
 }
