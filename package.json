@@ -11,5 +11,8 @@
   "devDependencies": {
     "@types/p5": "^1.6.1",
     "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "@types/flatbush": "^3.3.0"
   }
 }

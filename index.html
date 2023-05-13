@@ -12,6 +12,9 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
+    <script type="module">
+      import Flatbush from "https://cdn.jsdelivr.net/npm/flatbush/+esm";
+    </script>
     <script src="build/build.js"></script>
     <link rel="shortcut icon" href="https://p5js.org/assets/img/favicon.ico" />
     <link rel="icon" href="https://p5js.org/assets/img/favicon.ico" />
@@ -37,5 +40,6 @@
     <label for="delete"> Chose to delete or build </label>
     <input type="checkbox" id="static" />
     <label for="static"> Chose if object is static </label>
+    <button onclick="objects.clear()">Clear</button>
   </body>
 </html>
